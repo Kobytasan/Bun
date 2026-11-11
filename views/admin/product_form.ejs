@@ -1,0 +1,78 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-user">
+      <div class="admin-avatar"><%= user.name[0] %></div>
+      <div>
+        <strong><%= user.name %></strong>
+        <span><%= user.position %></span>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin">📊 Огляд</a>
+      <a href="/admin/orders">🧾 Замовлення</a>
+      <a href="/admin/products" class="active">🥖 Каталог продукції</a>
+      <% if (user.role === 'director') { %><a href="/admin/employees">👥 Працівники</a><% } %>
+      <a href="/catalog">🥖 Відкрити сайт</a>
+      <a href="/logout">🚪 Вийти</a>
+    </nav>
+  </aside>
+
+  <div class="admin-content">
+    <h1 class="page-title"><%= product ? 'Редагування продукції' : 'Нова продукція' %></h1>
+
+    <form method="POST" action="<%= product ? '/admin/products/' + product.id : '/admin/products' %>" class="checkout-form card">
+      <label>Назва виробу *
+        <input type="text" name="name" required value="<%= product ? product.name : '' %>" placeholder="Круасан з шоколадом, 90 г">
+      </label>
+      <div class="form-row">
+        <label>Категорія
+          <select name="category_id">
+            <option value="">— без категорії —</option>
+            <% categories.forEach(c => { %>
+              <option value="<%= c.id %>" <%= product && product.category_id === c.id ? 'selected' : '' %>><%= c.icon %> <%= c.name %></option>
+            <% }) %>
+          </select>
+        </label>
+        <label>Вага, г
+          <input type="number" min="0" name="weight_g" value="<%= product ? product.weight_g : '' %>">
+        </label>
+        <label>Ціна, грн *
+          <input type="number" step="0.01" min="0" name="price" required value="<%= product ? Number(product.price) : '' %>">
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Строк свіжості
+          <input type="text" name="shelf_life" value="<%= product ? product.shelf_life : '24 години' %>" placeholder="24 години">
+        </label>
+        <label>Запас, шт.
+          <input type="number" min="0" name="stock" value="<%= product ? product.stock : 0 %>">
+        </label>
+        <label>Емодзі-зображення
+          <input type="text" name="icon" value="<%= product ? product.icon : '🥖' %>" maxlength="8">
+        </label>
+      </div>
+      <label>Опис
+        <textarea name="description" rows="2"><%= product ? product.description : '' %></textarea>
+      </label>
+      <label>Склад
+        <textarea name="composition" rows="2"><%= product ? product.composition : '' %></textarea>
+      </label>
+      <div class="form-row">
+        <label class="checkbox-label">
+          <input type="checkbox" name="available" <%= !product || product.available ? 'checked' : '' %>> У продажу
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" name="featured" <%= product && product.featured ? 'checked' : '' %>> Улюблене у покупців (на головній)
+        </label>
+      </div>
+      <div class="cart-actions">
+        <a href="/admin/products" class="btn btn-outline">← Скасувати</a>
+        <button class="btn btn-primary btn-lg">Зберегти виріб</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,20 @@
+<%- include('partials/header') %>
+
+<div class="auth-card card">
+  <h1>🔐 Вхід для працівників</h1>
+  <p class="page-subtitle">Панель керування каталогом доступна лише співробітникам пекарні «Булка».</p>
+
+  <% if (error) { %><div class="alert alert-error">⚠️ <%= error %></div><% } %>
+
+  <form method="POST" action="/login" class="auth-form">
+    <label>Логін
+      <input type="text" name="login" required autofocus placeholder="director">
+    </label>
+    <label>Пароль
+      <input type="password" name="password" required placeholder="••••••••">
+    </label>
+    <button class="btn btn-primary btn-lg btn-block">Увійти</button>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

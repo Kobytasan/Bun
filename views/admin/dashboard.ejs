@@ -1,0 +1,84 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-user">
+      <div class="admin-avatar"><%= user.name[0] %></div>
+      <div>
+        <strong><%= user.name %></strong>
+        <span><%= user.position %> · <%= user.role === 'director' ? 'директор' : user.role === 'manager' ? 'менеджер' : 'працівник' %></span>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin" class="<%= path === '/admin' ? 'active' : '' %>">📊 Огляд</a>
+      <a href="/admin/orders" class="<%= path.startsWith('/admin/orders') ? 'active' : '' %>">🧾 Замовлення</a>
+      <% if (user.role === 'director' || user.role === 'manager') { %>
+        <a href="/admin/products" class="<%= path.startsWith('/admin/products') ? 'active' : '' %>">🥖 Каталог продукції</a>
+      <% } %>
+      <% if (user.role === 'director') { %>
+        <a href="/admin/employees" class="<%= path.startsWith('/admin/employees') ? 'active' : '' %>">👥 Працівники</a>
+      <% } %>
+      <a href="/catalog">🥖 Відкрити сайт</a>
+      <a href="/logout">🚪 Вийти</a>
+    </nav>
+  </aside>
+
+  <div class="admin-content">
+    <h1 class="page-title">Панель керування пекарні</h1>
+    <p class="page-subtitle">Стан каталогу продукції та замовлень «Булки».</p>
+
+    <div class="grid grid-4">
+      <div class="stat-card"><span class="stat-value"><%= counts.products %></span><span>позицій у каталозі</span></div>
+      <div class="stat-card stat-accent"><span class="stat-value"><%= counts.newOrders %></span><span>нових замовлень</span></div>
+      <div class="stat-card"><span class="stat-value"><%= counts.orders %></span><span>усіх замовлень</span></div>
+      <div class="stat-card stat-warn"><span class="stat-value"><%= counts.outOfStock %></span><span>позицій без запасу</span></div>
+    </div>
+
+    <div class="grid grid-2 admin-quick">
+      <% if (user.role === 'director' || user.role === 'manager') { %>
+      <div class="info-card">
+        <h3>🥖 Керування каталогом</h3>
+        <p>Додавайте нові вироби, оновлюйте ціни, склад і наявність — зміни одразу видно покупцям.</p>
+        <a href="/admin/products" class="btn btn-outline btn-sm">Перейти</a>
+      </div>
+      <% } %>
+      <% if (user.role === 'director') { %>
+      <div class="info-card">
+        <h3>👥 Персонал (<%= counts.employees %>)</h3>
+        <p>Облікові записи працівників пекарні та їхні права доступу.</p>
+        <a href="/admin/employees" class="btn btn-outline btn-sm">Перейти</a>
+      </div>
+      <% } %>
+      <div class="info-card">
+        <h3>💰 Сума замовлень</h3>
+        <p>Всього продано через сайт: <strong><%= counts.revenue %> грн</strong> (без урахування скасованих).</p>
+        <a href="/admin/orders" class="btn btn-outline btn-sm">Замовлення</a>
+      </div>
+    </div>
+
+    <h2 class="section-title">Останні замовлення</h2>
+    <div class="card">
+      <% if (!latest.length) { %>
+        <p class="empty-inline">Замовлень поки немає. Оформіть тестове замовлення через сайт.</p>
+      <% } else { %>
+        <table class="table">
+          <thead><tr><th>№</th><th>Покупець</th><th>Дата забору</th><th>Сума</th><th>Статус</th><th></th></tr></thead>
+          <tbody>
+            <% latest.forEach(o => { %>
+              <tr>
+                <td>№<%= o.id %></td>
+                <td><%= o.customer_name %> <small>(<%= o.client_type || '—' %>)</small></td>
+                <td><%= o.pickup_date || '—' %></td>
+                <td><%= Number(o.total) %> грн</td>
+                <td><span class="status status-<%= o.status %>"><%= o.status %></span></td>
+                <td><a href="/admin/orders/<%= o.id %>" class="btn btn-outline btn-sm">Відкрити</a></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

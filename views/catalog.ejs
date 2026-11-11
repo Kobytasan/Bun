@@ -1,0 +1,67 @@
+<%- include('partials/header') %>
+
+<h1 class="page-title">Каталог продукції пекарні</h1>
+<p class="page-subtitle">Асортимент «Булки»: хліб, булочки, круасани та кондитерські вироби.</p>
+
+<div class="catalog-layout">
+  <aside class="catalog-sidebar">
+    <h3>Категорії</h3>
+    <nav class="side-nav">
+      <a href="/catalog" class="<%= !currentCat ? 'active' : '' %>">Уся продукція</a>
+      <% categories.forEach(c => { %>
+        <a href="/catalog?cat=<%= c.id %>" class="<%= currentCat === c.id ? 'active' : '' %>">
+          <%= c.icon %> <%= c.name %>
+        </a>
+      <% }) %>
+    </nav>
+    <div class="side-filter">
+      <a href="/catalog?only=1" class="btn btn-outline btn-sm btn-block">✅ Лише в наявності</a>
+    </div>
+    <div class="side-box">
+      <h4>⏰ Важливо</h4>
+      <p>Замовлення на наступний ранок приймаємо до 20:00. Забрати випічку можна з 7:30.</p>
+    </div>
+  </aside>
+
+  <div class="catalog-content">
+    <form method="GET" action="/catalog" class="search-form">
+      <% if (currentCat) { %><input type="hidden" name="cat" value="<%= currentCat %>"><% } %>
+      <input type="text" name="q" value="<%= q %>" placeholder="Пошук продукції…">
+      <button class="btn btn-primary">Знайти</button>
+    </form>
+
+    <% if (!products.length) { %>
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <p>Продукції не знайдено. Спробуйте змінити пошуковий запит або категорію.</p>
+        <a href="/catalog" class="btn btn-outline">Скинути фільтри</a>
+      </div>
+    <% } else { %>
+      <p class="results-count">Знайдено позицій: <strong><%= products.length %></strong></p>
+      <div class="grid grid-3">
+        <% products.forEach(p => { %>
+          <div class="product-card">
+            <a href="/product/<%= p.id %>" class="product-icon"><%= p.icon %></a>
+            <a href="/product/<%= p.id %>" class="product-name"><%= p.name %></a>
+            <span class="product-cat"><%= p.category_name || '' %></span>
+            <span class="product-meta"><%= p.weight_g %> г · свіжість <%= p.shelf_life %></span>
+            <div class="product-prices">
+              <span class="price"><%= Number(p.price) %> грн</span>
+            </div>
+            <% if (p.available && p.stock > 0) { %>
+              <form method="POST" action="/cart/add/<%= p.id %>" class="add-form">
+                <input type="hidden" name="back" value="/catalog">
+                <input type="number" name="qty" value="1" min="1" max="<%= p.stock %>">
+                <button class="btn btn-primary btn-sm">🥖</button>
+              </form>
+            <% } else { %>
+              <span class="stock-out">Немає в наявності</span>
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

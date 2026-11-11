@@ -1,0 +1,86 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-user">
+      <div class="admin-avatar"><%= user.name[0] %></div>
+      <div>
+        <strong><%= user.name %></strong>
+        <span><%= user.position %> · директор</span>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin">📊 Огляд</a>
+      <a href="/admin/orders">🧾 Замовлення</a>
+      <a href="/admin/products">🥖 Каталог продукції</a>
+      <a href="/admin/employees" class="active">👥 Працівники</a>
+      <a href="/catalog">🥖 Відкрити сайт</a>
+      <a href="/logout">🚪 Вийти</a>
+    </nav>
+  </aside>
+
+  <div class="admin-content">
+    <h1 class="page-title">Працівники пекарні</h1>
+
+    <% if (msg) { %><div class="alert alert-error">⚠️ <%= msg %></div><% } %>
+
+    <div class="card">
+      <table class="table">
+        <thead><tr><th>ПІБ</th><th>Посада</th><th>Логін</th><th>Роль</th><th></th></tr></thead>
+        <tbody>
+          <% employees.forEach(e => { %>
+            <tr>
+              <td><strong><%= e.name %></strong></td>
+              <td><%= e.position %></td>
+              <td><code><%= e.login %></code></td>
+              <td>
+                <span class="role-tag role-<%= e.role %>">
+                  <%= e.role === 'director' ? 'директор' : e.role === 'manager' ? 'менеджер' : 'працівник' %>
+                </span>
+              </td>
+              <td>
+                <% if (e.id !== user.id) { %>
+                  <form method="POST" action="/admin/employees/<%= e.id %>/delete" class="inline-form" onsubmit="return confirm('Видалити обліковий запис «<%= e.name %>»?')">
+                    <button class="btn btn-danger btn-sm">🗑</button>
+                  </form>
+                <% } else { %>
+                  <span class="empty-inline">це ви</span>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-title">Додати працівника</h2>
+    <form method="POST" action="/admin/employees" class="checkout-form card">
+      <div class="form-row">
+        <label>ПІБ *
+          <input type="text" name="name" required placeholder="Гайдай Марія Олександрівна">
+        </label>
+        <label>Посада
+          <input type="text" name="position" placeholder="Пекар">
+        </label>
+        <label>Роль
+          <select name="role">
+            <option value="worker">Працівник (лише перегляд)</option>
+            <option value="manager">Менеджер (каталог + замовлення)</option>
+            <option value="director">Директор (усі права)</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Логін *
+          <input type="text" name="login" required placeholder="pekar2">
+        </label>
+        <label>Пароль *
+          <input type="text" name="password" required placeholder="Str0ngPass!">
+        </label>
+      </div>
+      <button class="btn btn-primary">Створити обліковий запис</button>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

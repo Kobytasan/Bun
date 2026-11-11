@@ -1,0 +1,65 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-user">
+      <div class="admin-avatar"><%= user.name[0] %></div>
+      <div>
+        <strong><%= user.name %></strong>
+        <span><%= user.position %></span>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin">📊 Огляд</a>
+      <a href="/admin/orders">🧾 Замовлення</a>
+      <a href="/admin/products" class="active">🥖 Каталог продукції</a>
+      <% if (user.role === 'director') { %><a href="/admin/employees">👥 Працівники</a><% } %>
+      <a href="/catalog">🥖 Відкрити сайт</a>
+      <a href="/logout">🚪 Вийти</a>
+    </nav>
+  </aside>
+
+  <div class="admin-content">
+    <div class="section-head">
+      <h1 class="page-title">Каталог продукції (<%= products.length %>)</h1>
+      <a href="/admin/products/new" class="btn btn-primary">+ Додати виріб</a>
+    </div>
+
+    <% if (msg) { %><div class="alert alert-error">⚠️ <%= msg %></div><% } %>
+
+    <div class="card">
+      <table class="table">
+        <thead><tr><th>Виріб</th><th>Категорія</th><th>Вага</th><th>Ціна</th><th>Запас</th><th>Стан</th><th></th></tr></thead>
+        <tbody>
+          <% products.forEach(p => { %>
+            <tr>
+              <td class="td-product"><span class="td-icon"><%= p.icon %></span><span><%= p.name %></span></td>
+              <td><%= p.category_name || '—' %></td>
+              <td><%= p.weight_g %> г</td>
+              <td><%= Number(p.price) %> грн</td>
+              <td><%= p.stock %></td>
+              <td>
+                <% if (p.available) { %>
+                  <span class="status status-виконано">у продажу</span>
+                <% } else { %>
+                  <span class="status status-скасовано">знято</span>
+                <% } %>
+              </td>
+              <td class="td-actions">
+                <form method="POST" action="/admin/products/<%= p.id %>/toggle" class="inline-form">
+                  <button class="btn btn-outline btn-sm" title="<%= p.available ? 'Зняти з продажу' : 'Повернути в продаж' %>"><%= p.available ? '⏸' : '▶' %></button>
+                </form>
+                <a href="/admin/products/<%= p.id %>/edit" class="btn btn-outline btn-sm">✏️</a>
+                <form method="POST" action="/admin/products/<%= p.id %>/delete" class="inline-form" onsubmit="return confirm('Видалити «<%= p.name %>»?')">
+                  <button class="btn btn-danger btn-sm">🗑</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

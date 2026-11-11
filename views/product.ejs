@@ -1,0 +1,54 @@
+<%- include('partials/header') %>
+
+<div class="breadcrumbs">
+  <a href="/">Головна</a> / <a href="/catalog">Каталог</a> /
+  <a href="/catalog?cat=<%= product.category_id %>"><%= product.category_name || 'Каталог' %></a> /
+  <span><%= product.name %></span>
+</div>
+
+<div class="product-detail">
+  <div class="product-detail-visual"><%= product.icon %></div>
+  <div class="product-detail-info">
+    <h1><%= product.name %></h1>
+    <span class="product-cat">Категорія: <%= product.category_name || '—' %></span>
+    <p class="product-desc"><%= product.description %></p>
+
+    <div class="price-table">
+      <div class="price-row">
+        <span>Ціна</span>
+        <strong><%= Number(product.price) %> грн</strong>
+      </div>
+      <div class="price-row">
+        <span>Вага</span>
+        <strong><%= product.weight_g %> г</strong>
+      </div>
+      <div class="price-row">
+        <span>Строк свіжості</span>
+        <strong><%= product.shelf_life %></strong>
+      </div>
+      <div class="price-row">
+        <span>Наявність</span>
+        <strong><%= product.stock > 0 ? product.stock + ' шт.' : 'немає' %></strong>
+      </div>
+    </div>
+
+    <details class="composition">
+      <summary>Склад продукції</summary>
+      <p><%= product.composition || 'Склад вказується на етикетці виробу.' %></p>
+    </details>
+
+    <% if (product.available && product.stock > 0) { %>
+      <form method="POST" action="/cart/add/<%= product.id %>" class="add-form add-form-lg">
+        <label>Кількість:
+          <input type="number" name="qty" value="1" min="1" max="<%= product.stock %>">
+        </label>
+        <input type="hidden" name="back" value="/product/<%= product.id %>">
+        <button class="btn btn-primary btn-lg">Замовити</button>
+      </form>
+    <% } else { %>
+      <div class="alert alert-info">Ця позиція тимчасово відсутня — загляньте у каталог, ми щось свіже вже печемо. 🥐</div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

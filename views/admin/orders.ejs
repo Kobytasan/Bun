@@ -1,0 +1,51 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-user">
+      <div class="admin-avatar"><%= user.name[0] %></div>
+      <div>
+        <strong><%= user.name %></strong>
+        <span><%= user.position %></span>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin">📊 Огляд</a>
+      <a href="/admin/orders" class="active">🧾 Замовлення</a>
+      <% if (user.role === 'director' || user.role === 'manager') { %><a href="/admin/products">🥖 Каталог продукції</a><% } %>
+      <% if (user.role === 'director') { %><a href="/admin/employees">👥 Працівники</a><% } %>
+      <a href="/catalog">🥖 Відкрити сайт</a>
+      <a href="/logout">🚪 Вийти</a>
+    </nav>
+  </aside>
+
+  <div class="admin-content">
+    <h1 class="page-title">Замовлення (<%= orders.length %>)</h1>
+
+    <div class="card">
+      <% if (!orders.length) { %>
+        <p class="empty-inline">Замовлень ще немає. Оформіть тестове замовлення на сайті.</p>
+      <% } else { %>
+        <table class="table">
+          <thead><tr><th>№</th><th>Покупець</th><th>Тип</th><th>Телефон</th><th>Дата забору</th><th>Сума</th><th>Статус</th><th></th></tr></thead>
+          <tbody>
+            <% orders.forEach(o => { %>
+              <tr>
+                <td>№<%= o.id %></td>
+                <td><%= o.customer_name %></td>
+                <td><%= o.client_type || '—' %></td>
+                <td><%= o.phone %></td>
+                <td><%= o.pickup_date || '—' %></td>
+                <td><%= Number(o.total) %> грн</td>
+                <td><span class="status status-<%= o.status %>"><%= o.status %></span></td>
+                <td><a href="/admin/orders/<%= o.id %>" class="btn btn-outline btn-sm">Відкрити</a></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,50 @@
+<%- include('partials/header') %>
+
+<% if (isNew) { %>
+  <div class="success-banner">
+    <div class="success-icon">✅</div>
+    <h1>Замовлення прийнято!</h1>
+    <p>Номер вашого замовлення — <strong>№<%= order.id %></strong>. Ми почнемо готувати випічку вчасно до вашого візиту.</p>
+  </div>
+<% } else { %>
+  <h1 class="page-title">Замовлення №<%= order.id %></h1>
+<% } %>
+
+<div class="order-card card">
+  <div class="order-head">
+    <div>
+      <span class="status status-<%= order.status %>"><%= order.status %></span>
+      <p class="order-date">Створено: <%= new Date(order.created_at).toLocaleString('uk-UA') %></p>
+    </div>
+    <div class="order-total"><%= Number(order.total) %> грн</div>
+  </div>
+
+  <table class="table">
+    <thead><tr><th>Продукція</th><th>К-сть</th><th>Ціна</th><th>Сума</th></tr></thead>
+    <tbody>
+      <% items.forEach(it => { %>
+        <tr>
+          <td><%= it.product_name %></td>
+          <td><%= it.qty %></td>
+          <td><%= Number(it.price) %> грн</td>
+          <td><%= Number(it.price) * it.qty %> грн</td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <div class="order-meta">
+    <div><span>Покупець:</span><strong><%= order.customer_name %></strong></div>
+    <div><span>Телефон:</span><strong><%= order.phone %></strong></div>
+    <div><span>Тип покупця:</span><strong><%= order.client_type || '—' %></strong></div>
+    <div><span>Дата забору:</span><strong><%= order.pickup_date || '—' %></strong></div>
+    <% if (order.comment) { %><div><span>Коментар:</span><strong><%= order.comment %></strong></div><% } %>
+  </div>
+</div>
+
+<div class="cart-actions">
+  <a href="/catalog" class="btn btn-outline">← До каталогу</a>
+  <a href="/" class="btn btn-primary">На головну</a>
+</div>
+
+<%- include('partials/footer') %>

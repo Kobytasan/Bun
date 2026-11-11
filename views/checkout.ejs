@@ -1,0 +1,55 @@
+<%- include('partials/header') %>
+
+<h1 class="page-title">Оформлення замовлення</h1>
+
+<% if (typeof error !== 'undefined' && error) { %>
+  <div class="alert alert-error">⚠️ <%= error %></div>
+<% } %>
+
+<div class="checkout-layout">
+  <form method="POST" action="/checkout" class="checkout-form card">
+    <h3>Дані покупця</h3>
+    <label>Ім'я *
+      <input type="text" name="customer_name" required value="<%= (typeof form !== 'undefined' && form) ? form.customer_name : '' %>" placeholder="Марія">
+    </label>
+    <label>Телефон *
+      <input type="tel" name="phone" required value="<%= (typeof form !== 'undefined' && form) ? form.phone : '' %>" placeholder="+380 __ ___ __ __">
+    </label>
+    <label>Тип покупця
+      <select name="client_type">
+        <option value="фізична особа">Фізична особа</option>
+        <option value="кафе / ресторан">Кафе / ресторан</option>
+        <option value="магазин">Магазин</option>
+        <option value="заклад / офіс">Заклад / офіс</option>
+      </select>
+    </label>
+
+    <h3>Самовивіз</h3>
+    <label>Дата забору випічки
+      <input type="date" name="pickup_date" value="<%= (typeof form !== 'undefined' && form && form.pickup_date) ? form.pickup_date : '' %>">
+    </label>
+    <label>Коментар до замовлення
+      <textarea name="comment" rows="3" placeholder="Наприклад: хліб нарізати, круасани — окремим пакетом"><%= (typeof form !== 'undefined' && form) ? (form.comment || '') : '' %></textarea>
+    </label>
+
+    <button class="btn btn-primary btn-lg btn-block">Підтвердити замовлення</button>
+    <p class="summary-note">Оплата — при отриманні у пекарні (готівка або картка).</p>
+  </form>
+
+  <aside class="checkout-summary card">
+    <h3>Ваше замовлення</h3>
+    <% items.forEach(it => { %>
+      <div class="summary-row">
+        <span><%= it.product.icon %> <%= it.product.name %> × <%= it.qty %></span>
+        <strong><%= it.sum %> грн</strong>
+      </div>
+    <% }) %>
+    <div class="summary-row summary-total">
+      <span>До сплати:</span>
+      <strong><%= total %> грн</strong>
+    </div>
+    <p class="summary-note">Отримання замовлення — за адресою: вул. Квіткова, 7, щодня з 7:30.</p>
+  </aside>
+</div>
+
+<%- include('partials/footer') %>

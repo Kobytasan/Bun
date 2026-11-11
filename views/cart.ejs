@@ -1,0 +1,60 @@
+<%- include('partials/header') %>
+
+<h1 class="page-title">Кошик замовлення</h1>
+
+<% if (!items.length) { %>
+  <div class="empty-state">
+    <div class="empty-icon">🥖</div>
+    <p>Кошик порожній. Оберіть свіжу випічку в каталозі пекарні.</p>
+    <a href="/catalog" class="btn btn-primary">До каталогу</a>
+  </div>
+<% } else { %>
+  <div class="cart-table-wrap">
+    <table class="table">
+      <thead>
+        <tr><th>Продукція</th><th>Ціна за шт.</th><th>К-сть</th><th>Сума</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% items.forEach(it => { %>
+          <tr>
+            <td class="td-product">
+              <span class="td-icon"><%= it.product.icon %></span>
+              <div>
+                <a href="/product/<%= it.product.id %>"><%= it.product.name %></a><br>
+                <span class="product-meta"><%= it.product.weight_g %> г</span>
+              </div>
+            </td>
+            <td><%= it.price %> грн</td>
+            <td>
+              <form method="POST" action="/cart/update" class="inline-form">
+                <input type="hidden" name="id" value="<%= it.product.id %>">
+                <input type="number" name="qty" value="<%= it.qty %>" min="1" onchange="this.form.submit()">
+              </form>
+            </td>
+            <td class="td-sum"><%= it.sum %> грн</td>
+            <td>
+              <form method="POST" action="/cart/remove" class="inline-form">
+                <input type="hidden" name="id" value="<%= it.product.id %>">
+                <button class="btn btn-danger btn-sm" title="Видалити">✕</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">Разом до сплати:</td>
+          <td class="td-sum td-total"><%= total %> грн</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="cart-actions">
+    <a href="/catalog" class="btn btn-outline">← Додати ще випічки</a>
+    <a href="/checkout" class="btn btn-primary btn-lg">Оформити замовлення →</a>
+  </div>
+<% } %>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,99 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+  <div class="hero-text">
+    <span class="hero-tag">🔥 Випікаємо з 2012 року</span>
+    <h1>Свіжа випічка <span class="accent">щоранку</span> з натурального тіста</h1>
+    <p>
+      Електронний каталог продукції пекарні: хліб на заквасці, круасани,
+      тістечка та пироги. Замовляйте онлайн — забирайте теплою того ж дня.
+    </p>
+    <div class="hero-actions">
+      <a href="/catalog" class="btn btn-primary btn-lg">Переглянути каталог</a>
+      <a href="/cart" class="btn btn-outline btn-lg">Замовити випічку</a>
+    </div>
+    <div class="hero-stats">
+      <div><strong>40+</strong><span>видів продукції</span></div>
+      <div><strong>06:00</strong><span>перша партія хліба</span></div>
+      <div><strong>0</strong><span>консервантів</span></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-card">🥖<span>Хліб на власній заквасці</span></div>
+    <div class="hero-card">🧁<span>Тістечка ручної роботи</span></div>
+    <div class="hero-card">📦<span>Замовлення для кафе і магазинів</span></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Асортимент пекарні</h2>
+  <div class="grid grid-3">
+    <% categories.forEach(c => { %>
+      <a href="/catalog?cat=<%= c.id %>" class="category-card">
+        <span class="category-icon"><%= c.icon %></span>
+        <span class="category-name"><%= c.name %></span>
+        <span class="category-link">Переглянути →</span>
+      </a>
+    <% }) %>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2 class="section-title">Улюблене у покупців</h2>
+    <a href="/catalog" class="section-link">Весь каталог →</a>
+  </div>
+  <div class="grid grid-4">
+    <% featured.forEach(p => { %>
+      <div class="product-card">
+        <a href="/product/<%= p.id %>" class="product-icon"><%= p.icon %></a>
+        <a href="/product/<%= p.id %>" class="product-name"><%= p.name %></a>
+        <span class="product-cat"><%= p.category_name %></span>
+        <span class="product-meta"><%= p.weight_g %> г · свіжість <%= p.shelf_life %></span>
+        <div class="product-prices">
+          <span class="price"><%= Number(p.price) %> грн</span>
+        </div>
+        <form method="POST" action="/cart/add/<%= p.id %>">
+          <input type="hidden" name="back" value="/">
+          <button class="btn btn-primary btn-block btn-sm">Замовити</button>
+        </form>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2 class="section-title">Свіже з печі 🔥</h2>
+    <a href="/catalog?only=1" class="section-link">Все в наявності →</a>
+  </div>
+  <div class="grid grid-4">
+    <% fresh.forEach(p => { %>
+      <div class="product-card">
+        <a href="/product/<%= p.id %>" class="product-icon"><%= p.icon %></a>
+        <a href="/product/<%= p.id %>" class="product-name"><%= p.name %></a>
+        <span class="product-cat"><%= p.category_name %></span>
+        <div class="product-prices">
+          <span class="price"><%= Number(p.price) %> грн</span>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<section class="section info-band">
+  <div class="info-card">
+    <h3>📋 Каталог автоматизовано</h3>
+    <p>Працівники пекарні ведуть продукцію через панель керування: ціни, склад, наявність оновлюються миттєво.</p>
+  </div>
+  <div class="info-card">
+    <h3>🏪 Для кафе та магазинів</h3>
+    <p>Оптове замовлення на ранок: виберіть продукцію, зазначте дату самовивозу — пекарня приготує все вчасно.</p>
+  </div>
+  <div class="info-card">
+    <h3>🌿 Натуральний склад</h3>
+    <p>Склад кожної позиції вказано в каталозі — жодних консервантів, барвників та маргарину.</p>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

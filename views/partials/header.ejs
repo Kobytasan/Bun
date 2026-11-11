@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | Булка — пекарня</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥖</text></svg>">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">🥖</span>
+        <span class="logo-text">Булка<small>пекарня · свіжа випічка щодня</small></span>
+      </a>
+      <nav class="main-nav">
+        <a href="/" class="<%= path === '/' ? 'active' : '' %>">Головна</a>
+        <a href="/catalog" class="<%= (path.startsWith('/catalog') || path.startsWith('/product')) ? 'active' : '' %>">Каталог</a>
+        <% if (user) { %>
+          <a href="/admin" class="<%= path.startsWith('/admin') ? 'active' : '' %>">Кабінет</a>
+        <% } %>
+        <a href="/cart" class="cart-link <%= (path === '/cart' || path === '/checkout') ? 'active' : '' %>">
+          Замовлення <span class="badge"><%= cartCount %></span>
+        </a>
+        <% if (user) { %>
+          <a href="/logout" class="btn btn-outline btn-sm">Вийти · <%= user.name.split(' ')[0] %></a>
+        <% } else { %>
+          <a href="/login" class="btn btn-primary btn-sm">Вхід для працівників</a>
+        <% } %>
+      </nav>
+    </div>
+  </header>
+
+  <% if (dbError) { %>
+    <div class="container">
+      <div class="alert alert-error">⚠️ Проблема з базою даних: <%= dbError %></div>
+    </div>
+  <% } %>
+
+  <main class="container main-content">
